@@ -1,11 +1,11 @@
-This program is not ready yet. Updates always being made!
+-> This program is not ready yet. Updates always being made!
 
-# Create and activate venv:
+-> Create and activate venv:
 
 ```python3 -m venv venv```
 ```source venv/bin/activate``` (linux)
 ```venv/Scripts/activate``` (windows)
 
-# Install pandas, matplotlib and openpyxl on venv:
+-> Install pandas, matplotlib and openpyxl on venv:
 
 ```pip install pandas matplotlib openpyxl```

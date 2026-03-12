@@ -16,4 +16,6 @@ venv/Scripts/activate
 
 - Install pandas, matplotlib and openpyxl on venv:
 
-```pip install pandas matplotlib openpyxl```
+```
+pip install pandas matplotlib openpyxl
+```

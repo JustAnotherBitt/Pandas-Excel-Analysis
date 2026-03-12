@@ -1,0 +1,8 @@
+# Create and activate venv:
+
+'''python3 -m venv venv'''
+'''source venv/bin/activate''' #linux
+'''venv/Scripts/activate''' #windows
+
+# Install pandas, matplotlib and openpyxl on venv
+'''pip install pandas matplotlib openpyxl'''

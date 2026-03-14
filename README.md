@@ -6,8 +6,14 @@ The goal of this project is to practice working with **Pandas DataFrames**, perf
 
 ## Features
 
-- Modify column values
-- Conditional updates
+- Data Loading
+- Data Exploration
+  - Filter rows by specific column values
+  - Quickly inspect table contents from the CLI
+- Data Modification
+  - Update values in a specific row
+  - Modify an entire column
+  - Perform conditional updates (e.g., update values in rows that match a condition)
 - Calculate statistics:
   - Mean
   - Median

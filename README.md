@@ -19,9 +19,9 @@ The goal of this project is to practice working with **Pandas DataFrames**, perf
 
 ## Requirements
 
-- Python 3
-- pandas
-- openpyxl
+1. Python 3
+2. pandas
+3. openpyxl
 
 - Create and activate virtual enviroment:
 
@@ -59,7 +59,5 @@ python main.py
 
 - Follow the prompts in the terminal to analyze or modify the Excel data. ;)
 
-
-__Author__
-
+### Author
 https://github.com/JustAnotherBitt :D

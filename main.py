@@ -9,12 +9,12 @@ from functions import *
 ###### Intro #######
 
 print('To use this program, first you need to put the excel file you want to analyze in the same directory of it.')
-table_name = input('Type the excel file name exactly as it appears in the file: ')
+table_name = input('Type the excel file name exactly as it appears in the file (do not include the .xlsx extension): ').strip()
 
 ###### Data loading #######
 
 try:
-    data = pd.read_excel(table_name)
+    data = pd.read_excel(table_name + '.xlsx')
 except FileNotFoundError:
     print("File not found. Please check the excel file name and try again.")
     exit()
@@ -64,7 +64,7 @@ while True:
             modify_column(data=data)
             
         elif choice.upper() == 'C':
-            pass #TODO: Implement conditional update function
+            conditional_update(data=data)
 
     elif choice == '3':
         print(dedent('''

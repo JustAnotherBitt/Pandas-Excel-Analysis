@@ -19,7 +19,7 @@ def filter_data(data):
 
 def update_row(data):
     print(f'This is your table: \n{data}\n')
-    index = int(input('Type the index number of the row you want to modify: '))
+    index = int(input('Type the index number of the row you want to modify: ')).strip()
     row_content = data.iloc[index]
     print(f'\n====== Row content ====== \n{row_content}')
     
@@ -28,7 +28,7 @@ def update_row(data):
     if modify.lower() == 'y':
         modify_row(data, index, row_content)           
     elif modify.lower() == 'n':
-        modify_another_row = input("Row will not be modified.\nDo you want to modify another row? (y/n): ")
+        modify_another_row = input("Row will not be modified.\nDo you want to modify another row? (y/n): ").strip()
         if modify_another_row.lower() == 'y':
             modify_row(data, index, row_content)
         else:
@@ -37,7 +37,7 @@ def update_row(data):
 
 def modify_row(data, index, row_content):
     for column in row_content.index:
-        new_value = input(f'Enter new value for {column} (current value: {row_content[column]}): ')
+        new_value = input(f'Enter new value for {column} (current value: {row_content[column]}): ').strip()
         
         if new_value:
             if data[column].dtype == 'int64':
@@ -57,7 +57,7 @@ def modify_row(data, index, row_content):
             
 def modify_column(data):     
     print(f'This is your table: \n{data}\n')
-    column_name = input("Type the column name you want to modify exactly as it appears in the data: ")
+    column_name = input("Type the column name you want to modify exactly as it appears in the data: ").strip()
     
     if column_name not in data.columns: #* data.columns is the Index which contains all the column names 
         print("Column not found.")
@@ -67,8 +67,8 @@ def modify_column(data):
     #* Display the unique values in the column, transforming them to strings and joining them with a comma and a space
     print("Current values:", ", ".join(str(v) for v in unique_values))
 
-    old_value = input("Which value do you want to change? ")
-    new_value = input("Enter the new value: ")
+    old_value = input("Which value do you want to change? ").strip()
+    new_value = input("Enter the new value: ").strip()
     
     if new_value == "":
             print("No changes made.")
@@ -101,91 +101,149 @@ def update_file(data):
         file_name = f"{base_name}_{counter}"
         counter += 1
         
-    data.to_excel(f"{file_name}.xlsx")       
+    data.to_excel(f"{file_name}.xlsx", index=False)       
     print(f"Updated file saved as {file_name}.xlsx")
+
+
+def conditional_update(data):
+    print(f'This is your table: \n{data}\n')
+    while True:
+        condition_column = input("Enter the column name for the condition: ").strip()
+        if condition_column not in data.columns:
+            print("Condition column not found. Please check the column name and try again. Type it exactly as it appears in the data.")
+        else:
+            break
+    
+    while True:
+        condition_value = input("Enter the value for the condition: ").strip()
+        if condition_value not in data[condition_column].values:
+            print("Condition value not found. Please check the value and try again.")
+        else:
+            break
+
+    while True:
+        target_column = input("Enter the column name you want to update: ").strip()
+        if target_column not in data.columns:
+            print("Target column not found. Please check the column name and try again. Type it exactly as it appears in the data.")
+        else:
+            break 
+    
+    new_value = input("Enter the new value: ").strip()
+    
+    if new_value == "":
+        print("No changes made.")
+    else:
+        data.loc[data[condition_column] == condition_value, target_column] = new_value
+        print("Conditional update applied successfully.")
+        update_file(data)
     
     
 def calculate_mean(data):
-    column_name = input("Enter the column name to calculate the mean: ")
-    if column_name not in data.columns:
-        print("Column name not found.")
-        return
-    if not pd.api.types.is_numeric_dtype(data[column_name]):
-        print("Mean can only be calculated for numeric columns. Please check the column name and try again.")
-        return
-    elif column_name not in data.columns:
-        print("Column name not found. Please check the column name and try again. Type it exactly as it appears in the data.")
-        return
-    else:
-        mean_value = data[column_name].mean()
-        print(f"The mean of {column_name} is: {mean_value}")
+    print(f'This is your table: \n{data}\n')
+    
+    while True:
+        column_name = input("Enter the column name to calculate the mean: ").strip()
+        
+        if column_name not in data.columns:
+            print("Column name not found.")
+            continue
+        if not pd.api.types.is_numeric_dtype(data[column_name]):
+            print("Mean can only be calculated for numeric columns. Please check the column name and try again.")
+            continue
+        elif column_name not in data.columns:
+            print("Column name not found. Please check the column name and try again. Type it exactly as it appears in the data.")
+            continue
+        else:
+            mean_value = data[column_name].mean()
+            print(f"The mean of {column_name} is: {mean_value}")
+            break
         
 
 def calculate_median(data):
-    column_name = input("Enter the column name to calculate the median: ")
+    print(f'This is your table: \n{data}\n')
     
-    if not pd.api.types.is_numeric_dtype(data[column_name]):
-        print("Median can only be calculated for numeric columns. Please check the column name and try again.")
-        return
-    elif column_name not in data.columns:
-        print("Column name not found. Please check the column name and try again. Type it exactly as it appears in the data.")
-        return
-    else:
-        median_value = data[column_name].median()
-        print(f"The median of {column_name} is: {median_value}")
+    while True:
+        column_name = input("Enter the column name to calculate the median: ").strip()
+        
+        if not pd.api.types.is_numeric_dtype(data[column_name]):
+            print("Median can only be calculated for numeric columns. Please check the column name and try again.")    
+            continue        
+        elif column_name not in data.columns:
+            print("Column name not found. Please check the column name and try again. Type it exactly as it appears in the data.")       
+            continue    
+        else:
+            median_value = data[column_name].median()
+            print(f"The median of {column_name} is: {median_value}")
+            break
         
         
 def calculate_mode(data):
-    column_name = input("Enter the column name to calculate the mode: ")
+    print(f'This is your table: \n{data}\n')
     
-    if not pd.api.types.is_numeric_dtype(data[column_name]):
-        print("Mode can only be calculated for numeric columns. Please check the column name and try again.")
-        return
-    elif column_name not in data.columns:
-        print("Column name not found. Please check the column name and try again. Type it exactly as it appears in the data.")
-        return
-    else:
-        mode_value = data[column_name].mode()[0]
-        print(f"The mode of {column_name} is: {mode_value}")
+    while True:
+        column_name = input("Enter the column name to calculate the mode: ").strip()
+        
+        if not pd.api.types.is_numeric_dtype(data[column_name]):
+            print("Mode can only be calculated for numeric columns. Please check the column name and try again.")
+            continue
+        elif column_name not in data.columns:
+            print("Column name not found. Please check the column name and try again. Type it exactly as it appears in the data.")
+            continue
+        else:
+            mode_value = data[column_name].mode()[0]
+            print(f"The mode of {column_name} is: {mode_value}")
+            break
         
         
 def calculate_std(data):
-    column_name = input("Enter the column name to calculate the standard deviation: ")
+    print(f'This is your table: \n{data}\n')
     
-    if not pd.api.types.is_numeric_dtype(data[column_name]):
-        print("Standard deviation can only be calculated for numeric columns. Please check the column name and try again.")
-        return
-    elif column_name not in data.columns:
-        print("Column name not found. Please check the column name and try again. Type it exactly as it appears in the data.")
-        return
-    else:
-        std_value = data[column_name].std()
-        print(f"The standard deviation of {column_name} is: {std_value}")
+    while True:
+        column_name = input("Enter the column name to calculate the standard deviation: ").strip()
+        
+        if not pd.api.types.is_numeric_dtype(data[column_name]):
+            print("Standard deviation can only be calculated for numeric columns. Please check the column name and try again.")
+            continue
+        elif column_name not in data.columns:
+            print("Column name not found. Please check the column name and try again. Type it exactly as it appears in the data.")
+            continue
+        else:
+            std_value = data[column_name].std()
+            print(f"The standard deviation of {column_name} is: {std_value}")
+            break
         
 def calculate_max(data):
-    column_name = input("Enter the column name to calculate the maximum: ")
+    print(f'This is your table: \n{data}\n')
     
-    if not pd.api.types.is_numeric_dtype(data[column_name]):
-        print("Maximum can only be calculated for numeric columns. Please check the column name and try again.")
-        return
-    elif column_name not in data.columns:
-        print("Column name not found. Please check the column name and try again. Type it exactly as it appears in the data.")
-        return
-    else:
-        max_value = data[column_name].max()
-        print(f"The maximum of {column_name} is: {max_value}")
+    while True:
+        column_name = input("Enter the column name to calculate the maximum: ").strip()
+        
+        if not pd.api.types.is_numeric_dtype(data[column_name]):
+            print("Maximum can only be calculated for numeric columns. Please check the column name and try again.")
+            continue
+        elif column_name not in data.columns:
+            print("Column name not found. Please check the column name and try again. Type it exactly as it appears in the data.")
+            continue
+        else:
+            max_value = data[column_name].max()
+            print(f"The maximum of {column_name} is: {max_value}")
+            break
         
 
 def calculate_min(data):
-    column_name = input("Enter the column name to calculate the minimum: ")
+    print(f'This is your table: \n{data}\n')
     
-    if not pd.api.types.is_numeric_dtype(data[column_name]):
-        print("Minimum can only be calculated for numeric columns. Please check the column name and try again.")
-        return
-    elif column_name not in data.columns:
-        print("Column name not found. Please check the column name and try again. Type it exactly as it appears in the data.")
-        return
-    else:
-        min_value = data[column_name].min()
-        print(f"The minimum of {column_name} is: {min_value}")
+    while True:
+        column_name = input("Enter the column name to calculate the minimum: ").strip()
+        
+        if not pd.api.types.is_numeric_dtype(data[column_name]):
+            print("Minimum can only be calculated for numeric columns. Please check the column name and try again.")
+            continue
+        elif column_name not in data.columns:
+            print("Column name not found. Please check the column name and try again. Type it exactly as it appears in the data.")
+            continue
+        else:
+            min_value = data[column_name].min()
+            print(f"The minimum of {column_name} is: {min_value}")
+            break
     

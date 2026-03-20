@@ -18,8 +18,21 @@ def filter_data(data):
         
 
 def update_row(data):
-    print(f'This is your table: \n{data}\n')
-    index = int(input('Type the index number of the row you want to modify: ')).strip()
+    print(f'\nThis is your table: \n{data}\n')
+    
+    while True:
+        try:
+            index = int(input("Enter the index of the row you want to modify (or type 'exit' to quit): "))
+            if index == 'exit':
+                print("No changes will be made to the data.")
+                return
+            if index < 0 or index >= len(data):
+                print("Index out of range. Please enter a valid index.")
+                continue
+            break
+        except ValueError:
+            print("Invalid input. Please enter a valid integer index.")
+    
     row_content = data.iloc[index]
     print(f'\n====== Row content ====== \n{row_content}')
     
@@ -37,9 +50,12 @@ def update_row(data):
 
 def modify_row(data, index, row_content):
     for column in row_content.index:
-        new_value = input(f'Enter new value for {column} (current value: {row_content[column]}): ').strip()
+        new_value = input(f'Enter new value for {column} (current value: {row_content[column]}) (or type \'exit\' to quit): ').strip()
         
         if new_value:
+            if new_value == 'exit':
+                print("No changes will be made to the data.")
+                return
             if data[column].dtype == 'int64':
                 new_value = int(new_value)
                 data.at[index, column] = new_value
@@ -56,18 +72,33 @@ def modify_row(data, index, row_content):
 
             
 def modify_column(data):     
-    print(f'This is your table: \n{data}\n')
-    column_name = input("Type the column name you want to modify exactly as it appears in the data: ").strip()
+    print(f'\n\nThis is your table: \n{data}\n')
     
-    if column_name not in data.columns: #* data.columns is the Index which contains all the column names 
-        print("Column not found.")
-        return #* Exit the function if the column name is not found in the data
+    while True:
+        try:
+            column_name = input("Type the column name you want to modify exactly as it appears in the data (or type 'exit' to quit): ").strip()
+            if column_name.lower() == 'exit':
+                print("No changes will be made to the data.")
+                return
+            if column_name not in data.columns: #* data.columns is the Index which contains all the column names
+                print("Column not found. Please check the column name and try again.")
+                continue
+            break
+        
+        except KeyError:
+            print("Column not found. Please check the column name and try again.")
     
     unique_values = data[column_name].unique()
     #* Display the unique values in the column, transforming them to strings and joining them with a comma and a space
     print("Current values:", ", ".join(str(v) for v in unique_values))
 
-    old_value = input("Which value do you want to change? ").strip()
+    while True:
+        old_value = input("Which value do you want to change? ").strip()
+        if old_value not in unique_values:
+            print("Value not found. Please check the value and try again.")
+            continue
+        break
+
     new_value = input("Enter the new value: ").strip()
     
     if new_value == "":
@@ -106,7 +137,7 @@ def update_file(data):
 
 
 def conditional_update(data):
-    print(f'This is your table: \n{data}\n')
+    print(f'\nThis is your table: \n{data}\n')
     while True:
         condition_column = input("Enter the column name for the condition: ").strip()
         if condition_column not in data.columns:
@@ -139,11 +170,14 @@ def conditional_update(data):
     
     
 def calculate_mean(data):
-    print(f'This is your table: \n{data}\n')
+    print(f'\nThis is your table: \n{data}\n')
     
     while True:
-        column_name = input("Enter the column name to calculate the mean: ").strip()
+        column_name = input("Enter the column name to calculate the mean (or type 'exit' to quit): ").strip()
         
+        if column_name.lower() == 'exit':
+            print("No changes will be made to the data.")
+            return
         if column_name not in data.columns:
             print("Column name not found.")
             continue
@@ -160,11 +194,14 @@ def calculate_mean(data):
         
 
 def calculate_median(data):
-    print(f'This is your table: \n{data}\n')
+    print(f'\nThis is your table: \n{data}\n')
     
     while True:
-        column_name = input("Enter the column name to calculate the median: ").strip()
+        column_name = input("Enter the column name to calculate the median (or type 'exit' to quit): ").strip()
         
+        if column_name.lower() == 'exit':
+            print("No changes will be made to the data.")
+            return
         if not pd.api.types.is_numeric_dtype(data[column_name]):
             print("Median can only be calculated for numeric columns. Please check the column name and try again.")    
             continue        
@@ -178,11 +215,14 @@ def calculate_median(data):
         
         
 def calculate_mode(data):
-    print(f'This is your table: \n{data}\n')
+    print(f'\nThis is your table: \n{data}\n')
     
     while True:
-        column_name = input("Enter the column name to calculate the mode: ").strip()
+        column_name = input("Enter the column name to calculate the mode (or type 'exit' to quit): ").strip()
         
+        if column_name.lower() == 'exit':
+            print("No changes will be made to the data.")
+            return
         if not pd.api.types.is_numeric_dtype(data[column_name]):
             print("Mode can only be calculated for numeric columns. Please check the column name and try again.")
             continue
@@ -196,11 +236,14 @@ def calculate_mode(data):
         
         
 def calculate_std(data):
-    print(f'This is your table: \n{data}\n')
+    print(f'\nThis is your table: \n{data}\n')
     
     while True:
-        column_name = input("Enter the column name to calculate the standard deviation: ").strip()
+        column_name = input("Enter the column name to calculate the standard deviation (or type 'exit' to quit): ").strip()
         
+        if column_name.lower() == 'exit':
+            print("No changes will be made to the data.")
+            return
         if not pd.api.types.is_numeric_dtype(data[column_name]):
             print("Standard deviation can only be calculated for numeric columns. Please check the column name and try again.")
             continue
@@ -213,11 +256,14 @@ def calculate_std(data):
             break
         
 def calculate_max(data):
-    print(f'This is your table: \n{data}\n')
+    print(f'\nThis is your table: \n{data}\n')
     
     while True:
-        column_name = input("Enter the column name to calculate the maximum: ").strip()
+        column_name = input("Enter the column name to calculate the maximum (or type 'exit' to quit): ").strip()
         
+        if column_name.lower() == 'exit':
+            print("No changes will be made to the data.")
+            return
         if not pd.api.types.is_numeric_dtype(data[column_name]):
             print("Maximum can only be calculated for numeric columns. Please check the column name and try again.")
             continue
@@ -231,11 +277,14 @@ def calculate_max(data):
         
 
 def calculate_min(data):
-    print(f'This is your table: \n{data}\n')
+    print(f'\nThis is your table: \n{data}\n')
     
     while True:
-        column_name = input("Enter the column name to calculate the minimum: ").strip()
+        column_name = input("Enter the column name to calculate the minimum (or type 'exit' to quit): ").strip()
         
+        if column_name.lower() == 'exit':
+            print("No changes will be made to the data.")
+            return
         if not pd.api.types.is_numeric_dtype(data[column_name]):
             print("Minimum can only be calculated for numeric columns. Please check the column name and try again.")
             continue

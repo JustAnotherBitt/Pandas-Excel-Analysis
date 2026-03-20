@@ -89,25 +89,38 @@ while True:
         [F] Minimum
         '''))
         
-        choice = input("\nEnter your choice (A/B/C/D): ")
+        while choice.upper() not in ['A', 'B', 'C', 'D', 'E', 'F']:
+            
+            choice = input("\nEnter your choice (A/B/C/D): ")
+            
+            if choice.upper() == 'A': 
+                calculate_mean(data=data)
+                break
+                
+            elif choice.upper() == 'B':
+                calculate_median(data=data)
+                break
+                
+            elif choice.upper() == 'C':
+                calculate_mode(data=data)
+                break
+
+            elif choice.upper() == 'D':
+                calculate_std(data=data)
+                break
+
+            elif choice.upper() == 'E':
+                calculate_max(data=data)
+                break
+
+            elif choice.upper() == 'F':
+                calculate_min(data=data)
+                break
+                        
+            else:
+                print("Invalid option. Try again...")
+            
         
-        if choice.upper() == 'A': 
-            calculate_mean(data=data)
-            
-        elif choice.upper() == 'B':
-            calculate_median(data=data)
-            
-        elif choice.upper() == 'C':
-            calculate_mode(data=data)
-
-        elif choice.upper() == 'D':
-            calculate_std(data=data)
-
-        elif choice.upper() == 'E':
-            calculate_max(data=data)
-
-        elif choice.upper() == 'F':
-            calculate_min(data=data)
             
     elif choice == '4':
         print("Exiting the program. Goodbye!")

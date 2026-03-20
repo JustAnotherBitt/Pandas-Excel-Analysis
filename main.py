@@ -55,16 +55,28 @@ while True:
         print("\nExample of conditional update:")
         print('Modify the "Tax Multiplier" in every row where the "Type" column is "Service" to 1.5')
         
-        choice = input("\nEnter your choice (A/B/C): ")
         
-        if choice.upper() == 'A':
-            update_row(data=data)
+        while choice.upper() not in ['A', 'B', 'C']:
+            choice = input("\nEnter your choice (A/B/C) or type 'exit' to quit: ").strip()
+        
+            if choice.upper() == 'A':
+                update_row(data=data)
+                break
+                    
+            elif choice.upper() == 'B':
+                modify_column(data=data)
+                break
                 
-        elif choice.upper() == 'B':
-            modify_column(data=data)
+            elif choice.upper() == 'C':
+                conditional_update(data=data)
+                break
             
-        elif choice.upper() == 'C':
-            conditional_update(data=data)
+            elif choice.lower() == 'exit':
+                print("Exiting the update menu.")
+                break
+            
+            else:
+                print("Invalid option. Try again...")
 
     elif choice == '3':
         print(dedent('''

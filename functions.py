@@ -255,6 +255,7 @@ def calculate_std(data):
             print(f"The standard deviation of {column_name} is: {std_value}")
             break
         
+        
 def calculate_max(data):
     print(f'\nThis is your table: \n{data}\n')
     

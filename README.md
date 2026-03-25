@@ -64,6 +64,7 @@ python main.py
 ```
 
 - Follow the prompts in the terminal to analyze or modify the Excel data. ;)
+- Obs: there's a table included with the project that you can use for testing.
 
 ### Author
 https://github.com/JustAnotherBitt :D

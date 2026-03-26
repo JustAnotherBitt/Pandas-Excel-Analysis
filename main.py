@@ -2,27 +2,22 @@
 
 import pandas as pd
 import matplotlib.pyplot as plt
+import time
 from textwrap import dedent
 from pathlib import Path
 from functions import *
-
-###### Intro #######
-
-print('To use this program, first you need to put the excel file you want to analyze in the same directory of it.')
-table_name = input('Type the excel file name exactly as it appears in the file (do not include the .xlsx extension): ').strip()
+from openpyxl import load_workbook
 
 ###### Data loading #######
 
-try:
-    data = pd.read_excel(table_name + '.xlsx')
-except FileNotFoundError:
-    print("File not found. Please check the excel file name and try again.")
-    exit()
-    
-print("File loaded successfully.")
+print('To use this program, first you need to put the excel file you want to analyze in the same directory of it.')
 
-see_data = input("Do you want to see the data? (y/n): ")
+table_name = input('Type the name of the Excel file you want to analyze (without the .xlsx extension): ').strip()
+data = load_data(table_name=table_name)
 
+print(f"\nFile loaded successfully! [{data.shape[0]} rows x {data.shape[1]} columns]")
+
+see_data = input("\nDo you want to see the data? (y/n): ")
 if see_data.lower() == 'y':
     print(data)
 else:
@@ -38,7 +33,8 @@ while True:
         1. Filter data by column value
         2. Update values
         3. Calculate statistics
-        4. Exit
+        4. See data
+        5. Exit
     '''))
 
     choice = input("Enter the number of your choice: ").strip()
@@ -121,8 +117,10 @@ while True:
                 print("Invalid option. Try again...")
             
         
-            
     elif choice == '4':
+        print(data)
+            
+    elif choice == '5':
         print("Exiting the program. Goodbye!")
         break
     

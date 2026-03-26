@@ -2,8 +2,89 @@
 
 import pandas as pd
 from pathlib import Path
+from constants import *
+import os
+from openpyxl import load_workbook
 
 ###### Functions #######   
+
+def convert_xlsx_to_csv(xlsx_file: str, csv_file: str) -> None:
+    print("Converting XLSX to CSV (this may take a moment)...")
+    chunk_size = 5000
+    
+    wb = load_workbook(xlsx_file, read_only=True)
+    ws = wb.active
+    
+    rows_iter = iter(ws.rows)
+    
+    # Read the header (first row)
+    header = [cell.value for cell in next(rows_iter)]
+    
+    first_chunk = True
+    chunk = []
+    
+    for row in rows_iter:
+        chunk.append([cell.value for cell in row])
+        
+        # When chunk is full, write to CSV and clear from memory
+        if len(chunk) == chunk_size:
+            df = pd.DataFrame(chunk, columns=header)
+            df.to_csv(csv_file, mode='w' if first_chunk else 'a', index=False, header=first_chunk)
+            first_chunk = False
+            chunk = []
+    
+    # Write remaining rows (last chunk that didn't reach chunk_size)
+    if chunk:
+        df = pd.DataFrame(chunk, columns=header)
+        df.to_csv(csv_file, mode='w' if first_chunk else 'a', index=False, header=first_chunk)
+    
+    wb.close()
+    print(f"Conversion complete! Saved as: {csv_file}")
+    
+    
+def load_data(table_name: str):    
+    xlsx_file = table_name + ".xlsx"
+    csv_file = table_name + ".csv"
+    
+    # --- Prefers CSV if it exists ---
+    if os.path.exists(csv_file):
+        print(f"CSV file found ({csv_file}). Reading directly...")
+        return pd.read_csv(csv_file)
+
+    # --- Verifies if the XLSX file exists ---
+    if not os.path.exists(xlsx_file):
+        print("File not found. Please check the file name and try again.")
+        exit()
+
+    # --- Verifies file size ---
+    print("Checking file size...")
+    wb = load_workbook(xlsx_file, read_only=True)
+    ws = wb.active
+    total_rows = ws.max_row
+    wb.close()
+    print(f"Total rows detected: {total_rows}")
+
+    # --- File is large: convert to CSV and read ---
+    if total_rows > LARGE_FILE_THRESHOLD:
+        print(f"\nLarge file detected ({total_rows} rows).")
+        convert = input("Convert to CSV for faster future reads? (y/n): ").strip().lower()
+        if convert == 'y':
+            convert_xlsx_to_csv(xlsx_file, csv_file)
+            print("Reading CSV...")
+            return pd.read_csv(csv_file)
+        else:
+            print(f"Reading only {PREVIEW_ROWS} rows from XLSX...")
+            return pd.read_excel(xlsx_file, nrows=PREVIEW_ROWS)
+
+    # --- File is medium: read partially ---
+    if total_rows > SMALL_FILE_LIMIT:
+        print(f"\nMedium file detected. Reading only {PREVIEW_ROWS} rows...")
+        return pd.read_excel(xlsx_file, nrows=PREVIEW_ROWS)
+
+    # --- File is small: read completely ---
+    print("\nSmall file. Reading complete...")
+    return pd.read_excel(xlsx_file)
+
 
 def filter_data(data):
     column_name = input("Enter the column name to filter by: ")
@@ -17,9 +98,7 @@ def filter_data(data):
         return
         
 
-def update_row(data):
-    print(f'\nThis is your table: \n{data}\n')
-    
+def update_row(data):   #TODO: to fix update_row() func to work better with larger files
     while True:
         try:
             index = int(input("Enter the index of the row you want to modify (or type 'exit' to quit): "))
@@ -71,7 +150,7 @@ def modify_row(data, index, row_content):
     update_file(data=data)
 
             
-def modify_column(data):     
+def modify_column(data):    #TODO: instead of asking for the column name to update values, ask for the column index
     print(f'\n\nThis is your table: \n{data}\n')
     
     while True:
@@ -137,7 +216,11 @@ def update_file(data):
 
 
 def conditional_update(data):
-    print(f'\nThis is your table: \n{data}\n')
+    print("\nTable columns:")
+    for i, column in enumerate(data.columns):
+        print(f"{i+1}. {column}")
+    print()    
+    
     while True:
         condition_column = input("Enter the column name for the condition: ").strip()
         if condition_column not in data.columns:
@@ -170,7 +253,10 @@ def conditional_update(data):
     
     
 def calculate_mean(data):
-    print(f'\nThis is your table: \n{data}\n')
+    print("\nTable columns:")
+    for i, column in enumerate(data.columns):
+        print(f"{i+1}. {column}")
+    print()    
     
     while True:
         column_name = input("Enter the column name to calculate the mean (or type 'exit' to quit): ").strip()
@@ -194,7 +280,11 @@ def calculate_mean(data):
         
 
 def calculate_median(data):
-    print(f'\nThis is your table: \n{data}\n')
+    print("\nTable columns:")
+    for i, column in enumerate(data.columns):
+        print(f"{i+1}. {column}")
+    print()    
+    
     
     while True:
         column_name = input("Enter the column name to calculate the median (or type 'exit' to quit): ").strip()
@@ -215,7 +305,11 @@ def calculate_median(data):
         
         
 def calculate_mode(data):
-    print(f'\nThis is your table: \n{data}\n')
+    print("\nTable columns:")
+    for i, column in enumerate(data.columns):
+        print(f"{i+1}. {column}")
+    print()    
+    
     
     while True:
         column_name = input("Enter the column name to calculate the mode (or type 'exit' to quit): ").strip()
@@ -236,7 +330,11 @@ def calculate_mode(data):
         
         
 def calculate_std(data):
-    print(f'\nThis is your table: \n{data}\n')
+    print("\nTable columns:")
+    for i, column in enumerate(data.columns):
+        print(f"{i+1}. {column}")
+    print()    
+    
     
     while True:
         column_name = input("Enter the column name to calculate the standard deviation (or type 'exit' to quit): ").strip()
@@ -257,7 +355,11 @@ def calculate_std(data):
         
         
 def calculate_max(data):
-    print(f'\nThis is your table: \n{data}\n')
+    print("\nTable columns:")
+    for i, column in enumerate(data.columns):
+        print(f"{i+1}. {column}")
+    print()    
+    
     
     while True:
         column_name = input("Enter the column name to calculate the maximum (or type 'exit' to quit): ").strip()
@@ -278,7 +380,11 @@ def calculate_max(data):
         
 
 def calculate_min(data):
-    print(f'\nThis is your table: \n{data}\n')
+    print("\nTable columns:")
+    for i, column in enumerate(data.columns):
+        print(f"{i+1}. {column}")
+    print()    
+    
     
     while True:
         column_name = input("Enter the column name to calculate the minimum (or type 'exit' to quit): ").strip()

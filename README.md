@@ -46,7 +46,7 @@ venv/Scripts/activate
 ## Install dependencies:
 
 ```bash
-pip install pandas matplotlib calamine
+pip install pandas matplotlib python-calamine
 ```
 
 ## Usage

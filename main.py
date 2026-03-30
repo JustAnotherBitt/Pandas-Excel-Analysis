@@ -6,7 +6,6 @@ import time
 from textwrap import dedent
 from pathlib import Path
 from functions import *
-from openpyxl import load_workbook
 
 ###### Data loading #######
 
